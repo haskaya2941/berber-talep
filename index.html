@@ -101,7 +101,7 @@ async function randevuAl() {
     formData.append("Notlar", document.getElementById('r_not').value);
 
     try {
-        await fetch("BURAYA_GOOGLE_SCRIPT_URL_GELECEK", {
+        await fetch("https://script.google.com/macros/s/AKfycbzL-k2kPvrlMfvtdA-nz-tWJFYRZu3l0tA1L7cs82Uo6ZNwk0kbWMV53GLg8H_uW8fxbg/exec", {
             method: "POST",
             body: formData,
             mode: "no-cors"
