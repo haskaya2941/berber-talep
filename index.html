@@ -3,135 +3,47 @@
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kaya Barber | Randevu</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Poppins', sans-serif; background: #121212; color: #eee; margin: 0; padding: 15px; }
-        .card { background: #1e1e1e; border-radius: 20px; max-width: 450px; margin: auto; border-top: 5px solid #d4af37; padding: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
-        .hizmet-item { background: #2a2a2a; padding: 15px; margin-bottom: 10px; border-radius: 12px; cursor: pointer; border: 1px solid transparent; display: flex; justify-content: space-between; }
-        .hizmet-item.selected { border-color: #d4af37; background: #333; }
-        .saat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
-        .saat-btn { padding: 12px; border: none; border-radius: 8px; background: #d4af37; color: #121212; font-weight: bold; cursor: pointer; }
-        .saat-btn.dolu { background: #333; color: #666; cursor: not-allowed; opacity: 0.5; }
-        .saat-btn.secili { outline: 3px solid white; }
-        input { width: 100%; padding: 15px; margin-top: 15px; border-radius: 10px; border: 1px solid #444; background: #2a2a2a; color: white; box-sizing: border-box; }
-        #btn-gonder { width: 100%; padding: 15px; margin-top: 25px; border-radius: 12px; background: linear-gradient(45deg, #d4af37, #f2d06b); border: none; font-weight: bold; cursor: pointer; }
-        .step { display: none; } .active { display: block; } .hidden { display: none; }
+        :root { --gold: #D4AF37; --bg: #121212; --card: #1E1E1E; --text: #EEEEEE; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; display: flex; align-items: center; min-height: 100vh; justify-content: center; }
+        .card { background: var(--card); border-radius: 25px; width: 100%; max-width: 420px; border-top: 6px solid var(--gold); padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); position: relative; overflow: hidden; }
+        .steps { display: flex; justify-content: space-between; margin-bottom: 30px; }
+        .step-dot { width: 30%; height: 4px; background: #333; border-radius: 2px; transition: 0.4s; }
+        .step-dot.active { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
+        h2 { text-align: center; color: var(--gold); letter-spacing: 3px; margin: 0; font-weight: 600; }
+        .hizmet-item { background: #252525; padding: 18px; margin-bottom: 12px; border-radius: 15px; cursor: pointer; border: 1px solid transparent; display: flex; align-items: center; transition: 0.3s; }
+        .hizmet-item.selected { border-color: var(--gold); background: #2a2a2a; transform: translateY(-2px); }
+        .saat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }
+        .saat-btn { padding: 14px; border: none; border-radius: 12px; background: var(--gold); color: #121212; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .saat-btn.dolu { background: #333; color: #555; cursor: not-allowed; }
+        .saat-btn.secili { outline: 3px solid #fff; box-shadow: 0 0 15px var(--gold); }
+        input { width: 100%; padding: 16px; margin-top: 15px; border-radius: 12px; border: 1px solid #444; background: #252525; color: white; font-size: 16px; box-sizing: border-box; }
+        #btn-action { width: 100%; padding: 18px; margin-top: 25px; border-radius: 15px; border: none; font-size: 16px; font-weight: bold; cursor: pointer; background: linear-gradient(45deg, #D4AF37, #F2D06B); color: #121212; }
+        .step-content { display: none; } .step-content.active { display: block; }
     </style>
 </head>
 <body>
-
-<div class="card" id="main-container">
-    <h2 style="text-align:center; color:#d4af37;">KAYA BARBER</h2>
-
-    <div id="step-1" class="step active">
-        <label>Hizmet Seçiniz:</label>
-        <div id="hizmet-listesi" style="margin-top:10px;"></div>
-        <button onclick="goToStep(2)" style="width:100%; margin-top:15px; padding:12px; border-radius:10px; border:none; background:#444; color:white; cursor:pointer;">İleri →</button>
-    </div>
-
-    <div id="step-2" class="step">
-        <label>Tarih Seçiniz:</label>
-        <input type="date" id="r_tarih" onchange="saatleriYukle()">
-        <div id="yukleniyor" class="hidden" style="text-align:center; padding:15px;">Saatler kontrol ediliyor...</div>
-        <div id="saat-alani" class="hidden">
-            <div class="saat-grid" id="saat-grid"></div>
-        </div>
-        <button onclick="goToStep(1)" style="background:transparent; color:#888; border:none; width:100%; margin-top:10px; cursor:pointer;">← Geri</button>
-    </div>
-
-    <div id="step-3" class="step">
-        <input type="text" id="m_ad" placeholder="Adınız Soyadınız">
-        <input type="tel" id="m_tel" placeholder="Telefon Numaranız">
-        <button id="btn-gonder" onclick="randevuTamamla()">RANDEVUYU ONAYLA</button>
-    </div>
+<div class="card" id="form-container">
+    <div class="steps"><div class="step-dot active" id="dot-1"></div><div class="step-dot" id="dot-2"></div><div class="step-dot" id="dot-3"></div></div>
+    <div class="header"><h2>KAYA BARBER</h2><p style="text-align:center;color:#666;font-size:11px;">Premium Gentlemen's Club</p></div>
+    <div id="step-1" class="step-content active"><div id="hizmet-listesi" style="margin-top:20px;"></div><button id="btn-action" onclick="goToStep(2)">SAAT SEÇİMİNE GEÇ</button></div>
+    <div id="step-2" class="step-content"><input type="date" id="r_tarih" onchange="saatleriYukle()"><div id="loading" style="display:none; text-align:center; margin:20px;">Müsaitlik kontrol ediliyor...</div><div id="saat-grid" class="saat-grid"></div></div>
+    <div id="step-3" class="step-content"><input type="text" id="m_ad" placeholder="Adınız Soyadınız"><input type="tel" id="m_tel" placeholder="Telefon Numaranız"><button id="btn-action" onclick="randevuBitir()">RANDEVUYU ONAYLA</button></div>
 </div>
-
-<div class="card hidden" id="success-box" style="text-align:center; padding:40px;">
-    <h1 style="font-size:60px;">✅</h1>
-    <h2 style="color:#d4af37;">Randevunuz Alındı!</h2>
-    <button onclick="location.reload()" style="background:#d4af37; border:none; padding:12px 25px; border-radius:10px; font-weight:bold; cursor:pointer;">Yeni Randevu</button>
-</div>
-
+<div class="card" id="success-screen" style="display:none; text-align:center; padding:50px 20px;"><h2>İŞLEM TAMAM ✨</h2><p>Kaya Barber randevunuz kaydedildi.</p><button id="btn-action" onclick="location.reload()">BAŞA DÖN</button></div>
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwJn36XNA_gC2n-0-AAeY1__OqoAaIg81qAc91cvuU-0l7-ygAktMc_WYKo5_f4bFLPWw/exec";
-const HIZMET_VERISI = {"Saç Kesimi": {"sure": 30, "fiyat": "250 TL"}, "Sakal Tıraşı": {"sure": 15, "fiyat": "150 TL"}, "Saç & Sakal Kombin": {"sure": 45, "fiyat": "350 TL"}, "Cilt Bakımı": {"sure": 30, "fiyat": "200 TL"}, "Saç Yıkama & Fön": {"sure": 20, "fiyat": "100 TL"}};
-let secilenHizmetler = [];
-let secilenSaat = "";
-
-const hList = document.getElementById('hizmet-listesi');
-for (let h in HIZMET_VERISI) {
-    hList.innerHTML += `<div class="hizmet-item" onclick="toggleHizmet(this, '${h}')">
-        <span>${h}</span><span>${HIZMET_VERISI[h].fiyat}</span>
-    </div>`;
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyEPYek8rxXiREruorWSaDaZ8yHwtN-4KGpfUsN8G9TLIEVyfoEOExMn_Vq09Ubw6pELg/exec";
+const HIZMET_DATA = {"Saç Kesimi": {"sure": 30, "fiyat": "250 TL", "icon": "✂️"}, "Sakal Tıraşı": {"sure": 15, "fiyat": "150 TL", "icon": "🪒"}, "Saç & Sakal Kombin": {"sure": 45, "fiyat": "350 TL", "icon": "👑"}, "Cilt Bakımı": {"sure": 30, "fiyat": "200 TL", "icon": "🧖‍♂️"}, "Saç Yıkama & Fön": {"sure": 20, "fiyat": "100 TL", "icon": "💨"}};
+let secilenHizmetler = []; let secilenSaat = "";
+const list = document.getElementById('hizmet-listesi');
+for (let h in HIZMET_DATA) {
+    list.innerHTML += `<div class="hizmet-item" onclick="toggleHizmet(this, '${h}')"><div style="font-size:24px;margin-right:15px;">${HIZMET_DATA[h].icon}</div><div style="flex-grow:1;"><span style="font-weight:600;display:block;">${h}</span><span style="font-size:12px;color:#888;">${HIZMET_DATA[h].sure} dk | ${HIZMET_DATA[h].fiyat}</span></div></div>`;
 }
-
-function toggleHizmet(el, ad) {
-    el.classList.toggle('selected');
-    if(secilenHizmetler.includes(ad)) secilenHizmetler = secilenHizmetler.filter(i => i !== ad);
-    else secilenHizmetler.push(ad);
-}
-
-function goToStep(s) {
-    if(s === 2 && secilenHizmetler.length === 0) return alert("Hizmet seçin!");
-    document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
-    document.getElementById('step-' + s).classList.add('active');
-}
-
-async function saatleriYukle() {
-    const tarih = document.getElementById('r_tarih').value;
-    document.getElementById('yukleniyor').classList.remove('hidden');
-    document.getElementById('saat-alani').classList.add('hidden');
-
-    try {
-        const res = await fetch(SCRIPT_URL);
-        const doluDilimler = await res.json();
-        const grid = document.getElementById('saat-grid');
-        grid.innerHTML = "";
-        
-        for(let h=8; h<21; h++) {
-            for(let m of ["00", "30"]) {
-                const saatStr = h.toString().padStart(2,'0') + ":" + m;
-                const tamTarih = new Date(tarih + "T" + saatStr).getTime();
-                const isDolu = doluDilimler.some(d => tamTarih >= d.baslangic && tamTarih < d.bitis);
-                
-                const btn = document.createElement('button');
-                btn.innerText = saatStr;
-                btn.className = isDolu ? "saat-btn dolu" : "saat-btn";
-                if(!isDolu) btn.onclick = function() {
-                    secilenSaat = saatStr;
-                    document.querySelectorAll('.saat-btn').forEach(b => b.classList.remove('secili'));
-                    this.classList.add('secili');
-                    setTimeout(() => goToStep(3), 300);
-                };
-                grid.appendChild(btn);
-            }
-        }
-        document.getElementById('yukleniyor').classList.add('hidden');
-        document.getElementById('saat-alani').classList.remove('hidden');
-    } catch(e) { alert("Hata oluştu."); }
-}
-
-async function randevuTamamla() {
-    const ad = document.getElementById('m_ad').value;
-    const tel = document.getElementById('m_tel').value;
-    if(!ad || !tel) return alert("Bilgileri doldurun.");
-
-    const btn = document.getElementById('btn-gonder');
-    btn.innerText = "GÖNDERİLİYOR...";
-    btn.disabled = true;
-
-    const data = new URLSearchParams();
-    data.append("Musteri", ad);
-    data.append("Telefon", tel);
-    data.append("Tarih", document.getElementById('r_tarih').value + "T" + secilenSaat);
-    data.append("Hizmetler", secilenHizmetler.join(", "));
-
-    try {
-        await fetch(SCRIPT_URL, { method: "POST", body: data, mode: "no-cors" });
-        document.getElementById('main-container').classList.add('hidden');
-        document.getElementById('success-box').classList.remove('hidden');
-    } catch(e) { alert("Hata!"); btn.disabled = false; }
-}
+function toggleHizmet(el, ad) { el.classList.toggle('selected'); if(secilenHizmetler.includes(ad)) secilenHizmetler = secilenHizmetler.filter(i => i !== ad); else secilenHizmetler.push(ad); }
+function goToStep(s) { if(s === 2 && secilenHizmetler.length === 0) return alert("Hizmet seçin!"); document.querySelectorAll('.step-content').forEach(c => c.classList.remove('active')); document.getElementById('step-' + s).classList.add('active'); document.querySelectorAll('.step-dot').forEach((d, i) => { if(i < s) d.classList.add('active'); else d.classList.remove('active'); }); }
+async function saatleriYukle() { const tarih = document.getElementById('r_tarih').value; const grid = document.getElementById('saat-grid'); const load = document.getElementById('loading'); grid.innerHTML = ""; load.style.display = "block"; try { const res = await fetch(SCRIPT_URL); const doluDilimler = await res.json(); load.style.display = "none"; for(let h=8; h<21; h++) { for(let m of ["00", "30"]) { const sStr = h.toString().padStart(2,'0') + ":" + m; const timeVal = new Date(tarih + "T" + sStr).getTime(); const isDolu = doluDilimler.some(d => { return timeVal >= d.baslangic && timeVal < d.bitis; }); const b = document.createElement('button'); b.innerText = sStr; b.className = isDolu ? "saat-btn dolu" : "saat-btn"; if(!isDolu) b.onclick = function() { secilenSaat = sStr; document.querySelectorAll('.saat-btn').forEach(btn => btn.classList.remove('secili')); this.classList.add('secili'); setTimeout(() => { goToStep(3); }, 400); }; grid.appendChild(b); } } } catch(e) { alert("Hata oluştu."); } }
+async function randevuBitir() { const ad = document.getElementById('m_ad').value; const tel = document.getElementById('m_tel').value; if(!ad || !tel) return alert("Bilgileri girin."); const params = new URLSearchParams(); params.append("Musteri", ad); params.append("Telefon", tel); params.append("Tarih", document.getElementById('r_tarih').value + "T" + secilenSaat); params.append("Hizmetler", secilenHizmetler.join(", ")); try { await fetch(SCRIPT_URL, { method: "POST", body: params, mode: "no-cors" }); document.getElementById('form-container').style.display = "none"; document.getElementById('success-screen').style.display = "block"; } catch(e) { alert("Bağlantı hatası."); } }
 </script>
 </body>
 </html>
