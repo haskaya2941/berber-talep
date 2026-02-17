@@ -53,7 +53,7 @@
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHjevRxIpxmP_4QcdytmKuOWhPXE8ZjIc2gtUfGWmv0SyVK3Zh_X3lwzd1PYuOwFj_Kg/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwJn36XNA_gC2n-0-AAeY1__OqoAaIg81qAc91cvuU-0l7-ygAktMc_WYKo5_f4bFLPWw/exec";
 const HIZMET_VERISI = {"Saç Kesimi": {"sure": 30, "fiyat": "250 TL"}, "Sakal Tıraşı": {"sure": 15, "fiyat": "150 TL"}, "Saç & Sakal Kombin": {"sure": 45, "fiyat": "350 TL"}, "Cilt Bakımı": {"sure": 30, "fiyat": "200 TL"}, "Saç Yıkama & Fön": {"sure": 20, "fiyat": "100 TL"}};
 let secilenHizmetler = [];
 let secilenSaat = "";
@@ -67,16 +67,13 @@ for (let h in HIZMET_VERISI) {
 
 function toggleHizmet(el, ad) {
     el.classList.toggle('selected');
-    if(secilenHizmetler.includes(ad)) {
-        secilenHizmetler = secilenHizmetler.filter(i => i !== ad);
-    } else {
-        secilenHizmetler.push(ad);
-    }
+    if(secilenHizmetler.includes(ad)) secilenHizmetler = secilenHizmetler.filter(i => i !== ad);
+    else secilenHizmetler.push(ad);
 }
 
 function goToStep(s) {
     if(s === 2 && secilenHizmetler.length === 0) return alert("Hizmet seçin!");
-    document.querySelectorAll('.step').forEach(el => { el.classList.remove('active'); });
+    document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
     document.getElementById('step-' + s).classList.add('active');
 }
 
@@ -95,27 +92,23 @@ async function saatleriYukle() {
             for(let m of ["00", "30"]) {
                 const saatStr = h.toString().padStart(2,'0') + ":" + m;
                 const tamTarih = new Date(tarih + "T" + saatStr).getTime();
-                const isDolu = doluDilimler.some(d => { return tamTarih >= d.baslangic && tamTarih < d.bitis; });
+                const isDolu = doluDilimler.some(d => tamTarih >= d.baslangic && tamTarih < d.bitis);
                 
                 const btn = document.createElement('button');
                 btn.innerText = saatStr;
                 btn.className = isDolu ? "saat-btn dolu" : "saat-btn";
-                if(!isDolu) {
-                    btn.onclick = function() {
-                        secilenSaat = saatStr;
-                        document.querySelectorAll('.saat-btn').forEach(b => { b.classList.remove('secili'); });
-                        this.classList.add('secili');
-                        setTimeout(() => { goToStep(3); }, 300);
-                    };
-                }
+                if(!isDolu) btn.onclick = function() {
+                    secilenSaat = saatStr;
+                    document.querySelectorAll('.saat-btn').forEach(b => b.classList.remove('secili'));
+                    this.classList.add('secili');
+                    setTimeout(() => goToStep(3), 300);
+                };
                 grid.appendChild(btn);
             }
         }
         document.getElementById('yukleniyor').classList.add('hidden');
         document.getElementById('saat-alani').classList.remove('hidden');
-    } catch(e) { 
-        alert("Hata: " + e); 
-    }
+    } catch(e) { alert("Hata oluştu."); }
 }
 
 async function randevuTamamla() {
@@ -137,10 +130,7 @@ async function randevuTamamla() {
         await fetch(SCRIPT_URL, { method: "POST", body: data, mode: "no-cors" });
         document.getElementById('main-container').classList.add('hidden');
         document.getElementById('success-box').classList.remove('hidden');
-    } catch(e) { 
-        alert("Hata!"); 
-        btn.disabled = false; 
-    }
+    } catch(e) { alert("Hata!"); btn.disabled = false; }
 }
 </script>
 </body>
