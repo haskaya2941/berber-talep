@@ -5,74 +5,90 @@
     <title>Kaya Barber | Randevu</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #D4AF37; --bg: #121212; --card: #1E1E1E; --text: #EEEEEE; }
-        body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; display: flex; align-items: center; min-height: 100vh; justify-content: center; }
+        :root { --gold: #D4AF37; --bg: #121212; --card: #1E1E1E; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); color: #eee; margin: 0; padding: 15px; display: flex; align-items: center; min-height: 100vh; justify-content: center; }
         .card { background: var(--card); border-radius: 25px; width: 100%; max-width: 420px; border-top: 6px solid var(--gold); padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
-        .hizmet-item { background: #252525; padding: 15px; margin-bottom: 10px; border-radius: 12px; cursor: pointer; border: 1px solid transparent; display: flex; align-items: center; }
+        .hizmet-item { background: #252525; padding: 15px; margin-bottom: 10px; border-radius: 12px; cursor: pointer; border: 1px solid transparent; display: flex; align-items: center; transition: 0.2s; }
         .hizmet-item.selected { border-color: var(--gold); background: #2a2a2a; }
         .saat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
         .saat-btn { padding: 12px; border: none; border-radius: 8px; background: var(--gold); color: #121212; font-weight: bold; cursor: pointer; }
         .saat-btn.dolu { background: #333; color: #555; cursor: not-allowed; }
-        input { width: 100%; padding: 15px; margin-top: 15px; border-radius: 10px; border: 1px solid #444; background: #252525; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; margin-top: 20px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; }
-        .btn-main { background: var(--gold); color: #121212; }
-        .btn-link { background: transparent; color: #888; font-size: 12px; margin-top: 10px; }
-        .step-content { display: none; } .active { display: block; }
+        .tel-wrap { display: flex; align-items: center; background: #252525; border: 1px solid #444; border-radius: 10px; margin-top: 15px; overflow: hidden; }
+        .tel-pre { background: #333; padding: 15px; color: var(--gold); font-weight: bold; border-right: 1px solid #444; }
+        .tel-wrap input { border: none; margin-top: 0; flex-grow: 1; }
+        input { width: 100%; padding: 15px; margin-top: 15px; border-radius: 10px; border: 1px solid #444; background: #252525; color: white; box-sizing: border-box; font-size: 16px; }
+        button.main { width: 100%; padding: 15px; margin-top: 20px; border-radius: 10px; border: none; font-weight: bold; background: var(--gold); color: #121212; cursor: pointer; }
+        .btn-cancel { background: transparent; color: #888; font-size: 12px; border: none; width: 100%; margin-top: 15px; cursor: pointer; }
+        .step { display: none; } .active { display: block; }
     </style>
 </head>
 <body>
-
 <div class="card" id="form-container">
-    <h2 style="text-align:center; color:var(--gold); margin-bottom: 0;">KAYA BARBER</h2>
-    <p style="text-align:center; color:#666; font-size:10px; margin-bottom:20px;">GEBZE | PREMIUM SERVICE</p>
+    <h2 style="text-align:center; color:var(--gold); margin:0;">KAYA BARBER</h2>
+    <p style="text-align:center; color:#666; font-size:10px; margin-bottom:20px;">PREMIUM MEN'S GROOMING</p>
 
-    <div id="step-home" class="step-content active">
-        <button class="btn-main" onclick="showStep('step-1')">YENİ RANDEVU AL</button>
-        <button class="btn-link" onclick="showStep('step-cancel')">Randevumu İptal Etmek İstiyorum</button>
+    <div id="step-home" class="step active">
+        <button class="main" onclick="showStep('step-1')">YENİ RANDEVU AL</button>
+        <button class="btn-cancel" onclick="showStep('step-cancel-form')">Randevumu İptal Et</button>
     </div>
 
-    <div id="step-1" class="step-content">
-        <div id="hizmet-listesi"></div>
-        <button class="btn-main" onclick="showStep('step-2')">İLERİ →</button>
-        <button class="btn-link" onclick="showStep('step-home')">Geri</button>
+    <div id="step-1" class="step">
+        <label style="font-size:12px; color:var(--gold);">HİZMET SEÇİNİZ</label>
+        <div id="hizmet-listesi" style="margin-top:10px;"></div>
+        <button class="main" onclick="showStep('step-2')">İLERİ →</button>
+        <button class="btn-cancel" onclick="showStep('step-home')">Geri</button>
     </div>
 
-    <div id="step-2" class="step-content">
+    <div id="step-2" class="step">
         <label style="font-size:12px; color:var(--gold);">TARİH SEÇİN</label>
         <input type="date" id="r_tarih" onchange="saatleriYukle()">
         <div id="saat-grid" class="saat-grid"></div>
-        <button class="btn-link" onclick="showStep('step-1')">Geri</button>
+        <button class="btn-cancel" onclick="showStep('step-1')">Geri</button>
     </div>
 
-    <div id="step-3" class="step-content">
+    <div id="step-3" class="step">
         <input type="text" id="m_ad" placeholder="Adınız Soyadınız">
-        <input type="tel" id="m_tel" placeholder="Telefon Numaranız">
-        <button class="btn-main" onclick="randevuKaydet()">ONAYLA</button>
+        <div class="tel-wrap">
+            <span class="tel-pre">+90</span>
+            <input type="tel" id="m_tel" placeholder="5xx xxx xxxx" maxlength="10">
+        </div>
+        <button class="main" onclick="randevuKaydet()">ONAYLA</button>
     </div>
 
-    <div id="step-cancel" class="step-content">
-        <p style="font-size:13px; color:#888;">İptal etmek istediğiniz randevuya ait telefon numarasını girin:</p>
-        <input type="tel" id="cancel_tel" placeholder="Telefon Numaranız">
-        <button class="btn-main" style="background:#cc3300; color:white;" onclick="randevuIptal()">RANDEVUYU SİL</button>
-        <button class="btn-link" onclick="showStep('step-home')">Vazgeç</button>
+    <div id="step-cancel-form" class="step">
+        <p style="font-size:13px; color:#888;">İptal için kayıtlı numaranızı girin:</p>
+        <div class="tel-wrap">
+            <span class="tel-pre">+90</span>
+            <input type="tel" id="cancel_tel" placeholder="5xx xxx xxxx" maxlength="10">
+        </div>
+        <button class="main" style="background:#cc3300; color:white;" onclick="randevuIptal()">SİSTEMDEN SİL</button>
+        <button class="btn-cancel" onclick="showStep('step-home')">Vazgeç</button>
     </div>
 </div>
 
+<div class="card" id="success-screen" style="display:none; text-align:center; padding:40px 20px;">
+    <h1 id="success-icon" style="font-size:60px; margin:0;">✅</h1>
+    <h2 id="success-title">İŞLEM TAMAM</h2>
+    <p id="success-msg">Randevunuz kaydedildi.</p>
+    <button class="main" onclick="location.reload()">BAŞA DÖN</button>
+</div>
+
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3hzVDTJdKLf31_7x1tIEXDvL9XGZtoI9HSGgXczH7d0I691GKcvV52Ctpce3wLPks/exec";
-const HIZMET_DATA = {"Saç Kesimi": {"sure": 30, "fiyat": "250 TL", "icon": "✂️"}, "Sakal Tıraşı": {"sure": 15, "fiyat": "150 TL", "icon": "🪒"}, "Saç & Sakal Kombin": {"sure": 45, "fiyat": "350 TL", "icon": "👑"}};
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxz1vx8ktIYAK6zenL7IQqKncYkDdvUH6NSCmedp9cW-UdsUwDwBbuOMEAFzZpD2V3e_g/exec";
+const HIZMET_DATA = {"Saç Kesimi": {"icon": "✂️", "fiyat": "250 TL"}, "Sakal Tıraşı": {"icon": "🪒", "fiyat": "150 TL"}, "Saç & Sakal Kombin": {"icon": "👑", "fiyat": "350 TL"}, "Cilt Bakımı": {"icon": "🧖‍♂️", "fiyat": "200 TL"}};
 let secilenHizmetler = []; let secilenSaat = "";
 
 const list = document.getElementById('hizmet-listesi');
 for (let h in HIZMET_DATA) {
     list.innerHTML += `<div class="hizmet-item" onclick="toggleHizmet(this, '${h}')">
-        <span style="font-size:20px; margin-right:15px;">${HIZMET_DATA[h].icon}</span>
-        <span>${h}</span>
+        <span style="font-size:22px; margin-right:15px; width:30px; text-align:center;">${HIZMET_DATA[h].icon}</span>
+        <span style="flex-grow:1; font-weight:600;">${h}</span>
+        <span style="color:#666; font-size:12px;">${HIZMET_DATA[h].fiyat}</span>
     </div>`;
 }
 
 function showStep(id) {
-    document.querySelectorAll('.step-content').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 }
 
@@ -85,22 +101,18 @@ function toggleHizmet(el, ad) {
 async function saatleriYukle() {
     const tarih = document.getElementById('r_tarih').value;
     const grid = document.getElementById('saat-grid');
-    grid.innerHTML = "<p style='grid-column:span 3; text-align:center;'>Yükleniyor...</p>";
-    
+    grid.innerHTML = "<p style='grid-column:span 3; text-align:center;'>Kontrol ediliyor...</p>";
     try {
         const res = await fetch(SCRIPT_URL);
         const doluDilimler = await res.json();
         grid.innerHTML = "";
-        
         for(let h=8; h<21; h++) {
             for(let m of ["00", "30"]) {
                 const sStr = h.toString().padStart(2,'0') + ":" + m;
                 const tVal = new Date(tarih + "T" + sStr).getTime();
                 const isDolu = doluDilimler.some(d => { return tVal >= d.baslangic && tVal < d.bitis; });
-
                 const b = document.createElement('button');
-                b.innerText = sStr;
-                b.className = isDolu ? "saat-btn dolu" : "saat-btn";
+                b.innerText = sStr; b.className = isDolu ? "saat-btn dolu" : "saat-btn";
                 if(!isDolu) b.onclick = () => { secilenSaat = sStr; showStep('step-3'); };
                 grid.appendChild(b);
             }
@@ -109,26 +121,35 @@ async function saatleriYukle() {
 }
 
 async function randevuKaydet() {
+    const tel = document.getElementById('m_tel').value;
+    if(tel.startsWith('0')) return alert("Lütfen numarayı 0 olmadan girin!");
     const params = new URLSearchParams();
     params.append("Musteri", document.getElementById('m_ad').value);
-    params.append("Telefon", document.getElementById('m_tel').value);
+    params.append("Telefon", tel);
     params.append("Tarih", document.getElementById('r_tarih').value + "T" + secilenSaat);
     params.append("Hizmetler", secilenHizmetler.join(", "));
     await fetch(SCRIPT_URL, { method: "POST", body: params, mode: "no-cors" });
-    alert("Randevunuz alındı!"); location.reload();
+    showSuccess("RANDEVU ALINDI", "Randevunuz sisteme kaydedildi. Telegram bildirimi iletildi.");
 }
 
 async function randevuIptal() {
     const tel = document.getElementById('cancel_tel').value;
-    if(!tel) return alert("Numara girin!");
+    if(tel.startsWith('0')) return alert("Lütfen numarayı 0 olmadan girin!");
     const params = new URLSearchParams();
     params.append("action", "cancel");
     params.append("Telefon", tel);
     const res = await fetch(SCRIPT_URL, { method: "POST", body: params });
     const txt = await res.text();
-    if(txt === "OK") alert("Randevunuz iptal edildi.");
-    else alert("Bu numaraya ait randevu bulunamadı.");
-    location.reload();
+    if(txt === "OK") showSuccess("İPTAL EDİLDİ", "Randevunuz başarıyla iptal edilmiştir.", "🗑️");
+    else alert("Bu numaraya ait aktif randevu bulunamadı.");
+}
+
+function showSuccess(title, msg, icon="✅") {
+    document.getElementById('form-container').style.display = "none";
+    document.getElementById('success-screen').style.display = "block";
+    document.getElementById('success-title').innerText = title;
+    document.getElementById('success-msg').innerText = msg;
+    document.getElementById('success-icon').innerText = icon;
 }
 </script>
 </body>
